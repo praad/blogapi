@@ -10,6 +10,8 @@ use App\Http\Resources\PostResource as PostResource;
 use App\Http\Resources\PostsResource as PostsResource;
 use App\Http\Resources\PostResourceCollection as PostResourceCollection;
 
+use Illuminate\Support\Facades\Auth;
+
 class PostController extends Controller
 {
 
@@ -48,8 +50,8 @@ class PostController extends Controller
     public function create(PostRequest $request)
     {
         //return Post::create($request->only);
-        //$user_id = (Auth::id()) ? Auth::id() : 1;
-        $post = Post::create($request->all());
+        $user_id = (Auth::id()) ? Auth::id() : 1;
+        $post = Post::create(['author' => $user_id , 'slug' => $request->slug, 'title' => $request->title, 'body' => $request->body]);
         //$post->author_id = $
         return response()->json($post, 201);
     }
