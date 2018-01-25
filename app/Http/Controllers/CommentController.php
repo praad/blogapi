@@ -20,41 +20,37 @@ class CommentController extends Controller
         return new CommentResourceCollection(Comment::paginate(1));
     }
 
-    public function show($post_id, $comment_id)
+    public function show(Post $post_id, Comment $comment_id)
     {
+        //dd($comment_id);
         // Remove data wrapping:
         //CommentResource::withoutWrapping();
-        $comment = Comment::findOrFail($comment_id);
-        return new CommentResource($comment);
+        return new CommentResource($comment_id);
     }
 
-    public function delete($post_id, $comment_id)
+    public function delete(Post $post_id, Comment $comment_id)
     {
-        $comment = Comment::findOrFail($comment_id);
-        $comment->delete();
+        $comment_id->delete();
         return response()->json(null, 204);
     }
 
     public function create(CommentRequest $request, Post $post_id)
-    {
-        
-        //dd($post_id);
-        //$comment = $post->comment()->save();
-     
-        
-        // Mukodik:
-        $user_id = (Auth::id()) ? Auth::id() : 1;
-        //$comment = Comment::create(['author' => $user_id , 'post_id' => $post_id, 'body' => $request->body]);
-        $comment = Comment::create(['author' => $user_id , 'post_id' => $post_id->id, 'body' => $request->body]);
-        return response()->json($comment, 201);
+    { 
+        //$user_id = (Auth::id()) ? Auth::id() : 1;
+        //$comment = Comment::create(['author' => $user_id , 'post_id' => $post_id->id, 'body' => $request->body]);
+        // ????
+        $comment = new Comment();
+        $comment->body = $request->body;
+        $comment->author = Auth::id();
+        $comment = $post_id->comments()->save($comment);
+        return response()->json(new CommentResource($comment), 201);
     }
 
-    public function update(CommentRequest $request, $comment_id)
+    public function update(CommentRequest $request, Post $post_id, Comment $comment_id)
     {
-        $comment = Comment::findOrFail($comment_id);
-        $comment->update($request->all());
-        //return $comment;
-        return response()->json($comment, 200);
+        //$user_id = (Auth::id()) ? Auth::id() : 1;
+        $comment_id->update($request->all());
+        return response()->json(new CommentResource($comment_id), 200);
     }
 
 }

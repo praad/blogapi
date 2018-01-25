@@ -19,3 +19,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/settings', 'SettingsController@index')->name('settings');
+
+// Debug logs:
+Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

@@ -34,33 +34,33 @@ class PostController extends Controller
     }
     */
 
-    public function show($post_id)
+    public function show(Post $post_id)
     {
-        $post = Post::findOrFail($post_id);
-        return new PostResource($post);
+        //$post = Post::findOrFail($post_id);
+        return new PostResource($post_id);
     }
 
-    public function delete($post_id)
+    public function delete(Post $post_id)
     {
-        $post = Post::findOrFail($post_id);
-        $post->delete();
+        //dd $post_id;
+        //$post = Post::findOrFail($post_id);
+        $post_id->delete();
         return response()->json(null, 204);
     }
 
     public function create(PostRequest $request)
     {
         //return Post::create($request->only);
-        $user_id = (Auth::id()) ? Auth::id() : 1;
-        $post = Post::create(['author' => $user_id , 'slug' => $request->slug, 'title' => $request->title, 'body' => $request->body]);
-        //$post->author_id = $
-        return response()->json($post, 201);
+        //$user_id = (Auth::id()) ? Auth::id() : 1;
+        $post = Post::create(['author' => Auth::id() , 'slug' => $request->slug, 'title' => $request->title, 'body' => $request->body]);
+        //$post = Post::create($request->all());
+        return response()->json(new PostResource($post), 201);
     }
 
-    public function update(PostRequest $request, $post_id)
+    public function update(PostRequest $request, Post $post_id)
     {
-        $post = Post::findOrFail($post_id);
-        $post->update($request->all());
-        return response()->json($post, 200);
+        $post_id->update($request->all());
+        return response()->json(new PostResource($post_id), 200);
     }
 
 }
